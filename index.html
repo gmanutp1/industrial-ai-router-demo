@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Industrial AI Voice Router Demo</title>
+    <meta
+      name="description"
+      content="A GitHub Pages demo for routing calls between Spooltech, ISD, and TRCW."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup" aria-label="Industrial AI Voice Router">
+          <span class="brand-mark" aria-hidden="true">IR</span>
+          <div>
+            <p class="eyebrow">Pilot Demo</p>
+            <h1>Industrial AI Voice Router</h1>
+          </div>
+        </div>
+        <nav class="top-actions" aria-label="Demo actions">
+          <a href="spooltech-isd-trcw-routing-knowledge.md">Knowledge Base</a>
+          <a href="ai-voice-agent-product-blueprint.md">Product Blueprint</a>
+          <a href="aws-voice-agent-implementation-plan.md">AWS Plan</a>
+        </nav>
+      </header>
+
+      <main class="workspace">
+        <section class="agent-panel" aria-labelledby="agent-title">
+          <div class="agent-status">
+            <div>
+              <p class="eyebrow">Caller Experience</p>
+              <h2 id="agent-title">Speak or type a request</h2>
+            </div>
+            <span id="voiceStatus" class="status-pill">Ready</span>
+          </div>
+
+          <div class="dialogue" aria-live="polite">
+            <div class="message agent">
+              <span class="message-avatar">AI</span>
+              <p>
+                Thanks for calling. I can help route you to Spooltech, ISD, or
+                TRCW. Briefly tell me what you need help with.
+              </p>
+            </div>
+            <div id="callerMessage" class="message caller is-empty">
+              <span class="message-avatar">You</span>
+              <p>Your spoken or typed request will appear here.</p>
+            </div>
+          </div>
+
+          <form id="requestForm" class="intake-form">
+            <label for="requestInput">Caller request</label>
+            <textarea
+              id="requestInput"
+              rows="5"
+              placeholder="Example: I need Inconel 625 overlay on a valve body..."
+            ></textarea>
+            <div class="form-actions">
+              <button id="micButton" type="button" class="icon-button" aria-label="Start voice input">
+                <svg aria-hidden="true" viewBox="0 0 24 24" class="button-icon">
+                  <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 1 0 6 0V6a3 3 0 0 0-3-3Z" />
+                  <path d="M5 11a7 7 0 0 0 14 0" />
+                  <path d="M12 18v3" />
+                  <path d="M8 21h8" />
+                </svg>
+                <span>Talk</span>
+              </button>
+              <button type="submit" class="primary-button">Analyze route</button>
+              <button id="resetButton" type="button" class="secondary-button">Reset</button>
+            </div>
+          </form>
+
+          <div class="sample-strip" aria-label="Sample caller requests">
+            <button type="button" data-sample="I need Inconel 625 weld overlay on a frac valve.">
+              Cladding
+            </button>
+            <button type="button" data-sample="Can you cut and form heavy sheet metal for an air handling unit?">
+              ISD sheet metal
+            </button>
+            <button type="button" data-sample="We need a pressure vessel and process piping fabricated to API standards.">
+              Spooltech
+            </button>
+            <button type="button" data-sample="Can you fabricate a thermal coating booth?">
+              Coating booth
+            </button>
+          </div>
+        </section>
+
+        <section class="result-panel" aria-labelledby="result-title">
+          <div class="result-header">
+            <div>
+              <p class="eyebrow">Routing Decision</p>
+              <h2 id="result-title">Awaiting caller request</h2>
+            </div>
+            <span id="confidenceBadge" class="confidence-badge neutral">No score</span>
+          </div>
+
+          <div id="routeResult" class="route-card empty-state">
+            <p>
+              The demo will score the request, choose a destination, explain
+              why, and generate the handoff script.
+            </p>
+          </div>
+        </section>
+
+        <aside class="side-panel" aria-label="Demo analytics and lead capture">
+          <section class="metrics-block">
+            <div class="panel-heading">
+              <p class="eyebrow">Local Analytics</p>
+              <button id="clearAnalytics" type="button">Clear</button>
+            </div>
+            <div class="metric-grid">
+              <div>
+                <span id="metricCalls">0</span>
+                <p>Demo calls</p>
+              </div>
+              <div>
+                <span id="metricLow">0</span>
+                <p>Low confidence</p>
+              </div>
+              <div>
+                <span id="metricLeads">0</span>
+                <p>Saved leads</p>
+              </div>
+            </div>
+            <div id="routeBreakdown" class="route-breakdown"></div>
+          </section>
+
+          <section class="lead-block">
+            <p class="eyebrow">Quote Intake</p>
+            <form id="leadForm" class="lead-form">
+              <label>
+                Name
+                <input id="leadName" autocomplete="name" placeholder="Caller name" />
+              </label>
+              <label>
+                Company
+                <input id="leadCompany" autocomplete="organization" placeholder="Company" />
+              </label>
+              <label>
+                Phone
+                <input id="leadPhone" autocomplete="tel" placeholder="Phone number" />
+              </label>
+              <label>
+                Email
+                <input id="leadEmail" autocomplete="email" placeholder="Email address" />
+              </label>
+              <button type="submit" class="primary-button full-width">Save demo lead</button>
+            </form>
+          </section>
+        </aside>
+      </main>
+
+      <section class="rules-panel" aria-labelledby="rules-title">
+        <div>
+          <p class="eyebrow">Routing Matrix</p>
+          <h2 id="rules-title">How the demo decides</h2>
+        </div>
+        <div id="rulesGrid" class="rules-grid"></div>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
