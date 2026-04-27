@@ -1,19 +1,22 @@
-# Industrial AI Voice Router Demo
+# Spooltech Group AI Voice Agent Demo
 
 This repository is a GitHub Pages-friendly prototype for testing an AI voice-routing concept between Spooltech, ISD, and TRCW.
 
-The demo is intentionally static so the company can test it without AWS, OpenAI keys, Amazon Connect setup, or a backend server. It uses browser speech input when available and always supports typed caller requests.
+The demo is intentionally static so the company can test it without AWS, OpenAI keys, Amazon Connect setup, or a backend server. It uses browser speech input when available, browser speech synthesis for spoken replies, and always supports typed visitor requests.
 
 ## What It Demonstrates
 
-- Voice or typed caller intake.
+- Voice or typed visitor intake.
+- Spoken AI replies using the browser's built-in speech synthesis.
+- A website selector for testing the same agent as embedded on Spooltech, ISD, TRCW, or a group landing page.
 - Routing between Spooltech, ISD, TRCW, or Manual Review.
 - Confidence scoring.
 - Matched routing signals.
-- Suggested transfer script.
+- Customer-facing redirect language when a sister company is the better fit.
 - Lead capture stored in browser local storage.
 - Local demo analytics by route and confidence.
 - A visible routing matrix for company review.
+- A dark industrial visual style inspired by the Spooltech family brand.
 
 ## Run Locally
 
@@ -29,7 +32,7 @@ Then visit:
 http://localhost:8080
 ```
 
-Microphone input usually requires Chrome or Edge and either `https://` or `localhost`. If speech input is unavailable, use the text box.
+Microphone input usually requires Chrome or Edge and either `https://` or `localhost`. If speech input is unavailable, use the text box. Spoken replies work in most modern browsers through the Web Speech API.
 
 ## Publish On GitHub Pages
 
@@ -41,7 +44,7 @@ Short version:
 2. Upload the demo files.
 3. Open `Settings -> Pages`.
 4. Use `Deploy from a branch`.
-5. Select `main` and `/root`.
+5. Select `gh-pages` and `/root`.
 6. Open the published Pages URL after GitHub finishes deploying.
 
 If you push with `git`, you can also use `GitHub Actions`; the included `.github/workflows/pages.yml` workflow will deploy the static demo.
