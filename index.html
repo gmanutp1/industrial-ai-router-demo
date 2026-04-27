@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Industrial AI Voice Router Demo</title>
+    <title>Spooltech Group AI Voice Agent Demo</title>
     <meta
       name="description"
       content="A GitHub Pages demo for routing calls between Spooltech, ISD, and TRCW."
@@ -14,10 +14,10 @@
     <div class="app-shell">
       <header class="topbar">
         <div class="brand-lockup" aria-label="Industrial AI Voice Router">
-          <span class="brand-mark" aria-hidden="true">IR</span>
+          <span class="brand-mark" aria-hidden="true">ST</span>
           <div>
-            <p class="eyebrow">Pilot Demo</p>
-            <h1>Industrial AI Voice Router</h1>
+            <p class="eyebrow">Spooltech Group Pilot Demo</p>
+            <h1>AI Voice Agent</h1>
           </div>
         </div>
         <nav class="top-actions" aria-label="Demo actions">
@@ -31,32 +31,56 @@
         <section class="agent-panel" aria-labelledby="agent-title">
           <div class="agent-status">
             <div>
-              <p class="eyebrow">Caller Experience</p>
-              <h2 id="agent-title">Speak or type a request</h2>
+              <p class="eyebrow">Website Agent Experience</p>
+              <h2 id="agent-title">Ask the AI voice agent</h2>
             </div>
             <span id="voiceStatus" class="status-pill">Ready</span>
+          </div>
+
+          <div class="site-context">
+            <label for="siteSelect">
+              Website being tested
+              <select id="siteSelect">
+                <option value="group">Group landing page</option>
+                <option value="spooltech">Spooltech website</option>
+                <option value="isd">ISD website</option>
+                <option value="trcw">TRCW website</option>
+              </select>
+            </label>
+            <div class="voice-controls">
+              <button id="speakToggle" type="button" class="secondary-button">Voice reply: On</button>
+              <button id="replayButton" type="button" class="secondary-button">Replay reply</button>
+            </div>
           </div>
 
           <div class="dialogue" aria-live="polite">
             <div class="message agent">
               <span class="message-avatar">AI</span>
               <p>
-                Thanks for calling. I can help route you to Spooltech, ISD, or
-                TRCW. Briefly tell me what you need help with.
+                Thanks for reaching out. Tell me what you need built, repaired,
+                cut, formed, coated, machined, or fabricated, and I’ll help get
+                you to the right team.
               </p>
             </div>
             <div id="callerMessage" class="message caller is-empty">
               <span class="message-avatar">You</span>
               <p>Your spoken or typed request will appear here.</p>
             </div>
+            <div id="agentReply" class="message agent reply-message">
+              <span class="message-avatar">AI</span>
+              <p>
+                I’ll answer out loud and tell the visitor whether this company
+                can help or whether a sister company is the better fit.
+              </p>
+            </div>
           </div>
 
           <form id="requestForm" class="intake-form">
-            <label for="requestInput">Caller request</label>
+            <label for="requestInput">Visitor request</label>
             <textarea
               id="requestInput"
               rows="5"
-              placeholder="Example: I need Inconel 625 overlay on a valve body..."
+              placeholder="Example: Can ISD help with a sheet metal air handling unit?"
             ></textarea>
             <div class="form-actions">
               <button id="micButton" type="button" class="icon-button" aria-label="Start voice input">
@@ -68,7 +92,7 @@
                 </svg>
                 <span>Talk</span>
               </button>
-              <button type="submit" class="primary-button">Analyze route</button>
+              <button type="submit" class="primary-button">Ask agent</button>
               <button id="resetButton" type="button" class="secondary-button">Reset</button>
             </div>
           </form>
@@ -86,22 +110,25 @@
             <button type="button" data-sample="Can you fabricate a thermal coating booth?">
               Coating booth
             </button>
+            <button type="button" data-sample="Can Spooltech help with DNV skids and pressure piping?">
+              DNV skid
+            </button>
           </div>
         </section>
 
         <section class="result-panel" aria-labelledby="result-title">
           <div class="result-header">
             <div>
-              <p class="eyebrow">Routing Decision</p>
-              <h2 id="result-title">Awaiting caller request</h2>
+              <p class="eyebrow">Agent Decision</p>
+              <h2 id="result-title">Awaiting visitor request</h2>
             </div>
             <span id="confidenceBadge" class="confidence-badge neutral">No score</span>
           </div>
 
           <div id="routeResult" class="route-card empty-state">
             <p>
-              The demo will score the request, choose a destination, explain
-              why, and generate the handoff script.
+              The agent will answer the visitor, explain whether the current
+              company can help, and recommend a sister company when needed.
             </p>
           </div>
         </section>
