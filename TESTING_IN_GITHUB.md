@@ -23,7 +23,7 @@ Use this if you do not want to use Terminal yet.
 6. Open `Settings -> Pages`.
 7. Under `Build and deployment`, choose `Deploy from a branch`.
 8. Select:
-   - Branch: `main`
+   - Branch: `gh-pages`
    - Folder: `/root`
 9. Click `Save`.
 10. Wait 1-3 minutes, then open the GitHub Pages URL shown on that page.
@@ -45,7 +45,7 @@ Use this if you can push the folder with `git`.
 
 ## Test Cases
 
-Paste or speak these into the demo:
+Use the `Website being tested` selector first, then paste or speak these into the demo. The AI reply should also play out loud when `Voice reply: On` is enabled.
 
 - `I need Inconel 625 weld overlay on a frac valve.`
   - Expected: TRCW
@@ -62,10 +62,21 @@ Paste or speak these into the demo:
 - `Can ISD build commercial cooking equipment?`
   - Expected: Manual Review
 
+## Website-Specific Redirect Tests
+
+- Select `ISD website`, then ask for `a pressure vessel and process piping`.
+  - Expected spoken reply: ISD may not be the best fit; Spooltech is the better sister company.
+- Select `Spooltech website`, then ask for `sheet metal for an air handling unit`.
+  - Expected spoken reply: Spooltech may not be the best fit; ISD is the better sister company.
+- Select `TRCW website`, then ask for `Inconel 625 weld overlay`.
+  - Expected spoken reply: TRCW should be able to help.
+
 ## Voice Testing Notes
 
 - The microphone button works best in Chrome or Edge.
 - GitHub Pages uses HTTPS, which helps browser microphone permissions work.
+- The spoken AI answer uses the browser's built-in speech synthesis.
+- Use `Replay reply` if a reviewer misses the spoken answer.
 - If the browser blocks voice input, use the text box. The routing logic is the same.
 
 ## What To Ask The Company To Review
