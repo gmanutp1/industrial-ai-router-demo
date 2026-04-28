@@ -286,6 +286,13 @@ button {
   background: var(--green);
 }
 
+.intake-summary {
+  margin: -4px 0 0;
+  color: var(--soft);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .bubble {
   display: grid;
   gap: 6px;
