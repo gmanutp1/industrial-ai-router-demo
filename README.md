@@ -1,26 +1,24 @@
-# Spooltech Group AI Voice Agent Demo
+# Talk to Bob - Industrial Voice Agent Demo
 
-This repository is a GitHub Pages-friendly prototype for testing an AI voice-routing concept between Spooltech, ISD, and TRCW.
+This GitHub Pages demo shows the intended embedded website experience: a single floating `Talk to Bob` button in the lower-left corner.
 
-The demo is intentionally static so the company can test it without AWS, OpenAI keys, Amazon Connect setup, or a backend server. It uses browser speech input when available, browser speech synthesis for spoken replies, and always supports typed visitor requests.
+When clicked, Bob opens and says:
 
-## What It Demonstrates
+```text
+Hi I am Bob, how can I be of assistance today?
+```
 
-- Voice or typed visitor intake.
-- Spoken AI replies using the browser's built-in speech synthesis.
-- A website selector for testing the same agent as embedded on Spooltech, ISD, TRCW, or a group landing page.
-- Routing between Spooltech, ISD, TRCW, or Manual Review.
-- Confidence scoring.
-- Matched routing signals.
-- Customer-facing redirect language when a sister company is the better fit.
-- Lead capture stored in browser local storage.
-- Local demo analytics by route and confidence.
-- A visible routing matrix for company review.
-- A dark industrial visual style inspired by the Spooltech family brand.
+Bob can then listen through the browser microphone or accept typed input, answer conversationally, and route the visitor toward Spooltech, ISD, TRCW, or manual review.
+
+## Demo Notes
+
+- The page is intentionally minimal so the customer sees the website, not a routing dashboard.
+- The voice uses the browser's best available speech-synthesis voice for GitHub Pages testing.
+- A production version should use a high-quality voice service through the AWS backend so Bob sounds more natural and consistent across devices.
 
 ## Run Locally
 
-Open `index.html` in a browser, or run a small static server:
+Open `index.html` in a browser, or run:
 
 ```bash
 python3 -m http.server 8080
@@ -32,44 +30,4 @@ Then visit:
 http://localhost:8080
 ```
 
-Microphone input usually requires Chrome or Edge and either `https://` or `localhost`. If speech input is unavailable, use the text box. Spoken replies work in most modern browsers through the Web Speech API.
-
-## Publish On GitHub Pages
-
-For the fastest test link, follow `TESTING_IN_GITHUB.md`.
-
-Short version:
-
-1. Create a GitHub repository.
-2. Upload the demo files.
-3. Open `Settings -> Pages`.
-4. Use `Deploy from a branch`.
-5. Select `gh-pages` and `/root`.
-6. Open the published Pages URL after GitHub finishes deploying.
-
-If you push with `git`, you can also use `GitHub Actions`; the included `.github/workflows/pages.yml` workflow will deploy the static demo.
-
-## Production Path
-
-For the real hosted product, use `ai-voice-agent-product-blueprint.md` and `aws-voice-agent-implementation-plan.md`.
-
-Recommended AWS path:
-
-- Amazon Connect for phone numbers, call flows, transfers, and recordings.
-- Amazon Connect AI agents or Lex for voice self-service.
-- Lambda for routing decisions.
-- DynamoDB or Aurora for tenant settings and call records.
-- S3 for recordings, transcripts, and knowledge documents.
-- Contact Lens for transcripts, summaries, sentiment, and analytics.
-- Cognito for client login.
-- Stripe for subscription billing.
-
-## Current Routing Knowledge
-
-The live demo logic is based on `spooltech-isd-trcw-routing-knowledge.md`.
-
-Key clarifications already included:
-
-- ISD preferred emails: `info@isdfab.com`, `j.pena@isdfab.com`, `r.ranero@isdfab.com`.
-- ISD handles sheet metal manufacturing, plate cutting, forming, thermal coating booths, air handling units, skids, and weldments.
-- ISD does not handle vessels, tanks, pressure containment, fluid transportation systems, installation, equipment assembly, piping, plant maintenance, commercial cooking equipment, BBQ pits, or smokers.
+Microphone input works best in Chrome or Edge over `https://` or `localhost`.
