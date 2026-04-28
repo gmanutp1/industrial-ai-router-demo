@@ -352,6 +352,26 @@ button {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.voice-config {
+  display: grid;
+  gap: 7px;
+  padding: 0 16px 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.voice-config select {
+  min-height: 40px;
+  border: 1px solid var(--line-strong);
+  background: #0f1315;
+  color: #fff;
+  padding: 0 12px;
+  outline: none;
+}
+
 .text-fallback {
   display: grid;
   gap: 7px;
