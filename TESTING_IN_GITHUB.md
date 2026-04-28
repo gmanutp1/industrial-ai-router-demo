@@ -38,4 +38,10 @@ Expected: Bob asks only one short follow-up question at a time and finishes with
 
 ## Voice Notes
 
-The GitHub demo uses browser speech synthesis, so voice quality depends on the reviewer's browser and operating system. The production AWS version should use a dedicated natural voice service so Bob sounds more human and consistent.
+The GitHub demo no longer uses browser `speechSynthesis` for Bob's voice. Bob will only speak if the page is opened with a configured OpenAI TTS endpoint, for example:
+
+```text
+https://gmanutp1.github.io/industrial-ai-router-demo/?tts=https://YOUR_API_GATEWAY_URL/tts&voice=cedar
+```
+
+Use the voice dropdown to compare `cedar`, `marin`, `onyx`, and `echo`. For the warm adult male target, start with `cedar`, then compare `onyx` and `echo`.
