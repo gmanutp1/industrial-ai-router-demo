@@ -13,8 +13,9 @@ Bob can then listen through the browser microphone or accept typed input, answer
 ## Demo Notes
 
 - The page is intentionally minimal so the customer sees the website, not a routing dashboard.
-- The voice uses the browser's best available speech-synthesis voice for GitHub Pages testing.
-- A production version should use a high-quality voice service through the AWS backend so Bob sounds more natural and consistent across devices.
+- Bob does not use browser speech synthesis. Voice output comes from a configurable OpenAI TTS endpoint.
+- A production version should run that OpenAI call through the AWS backend so the API key is never exposed in the browser.
+- The widget labels Bob as an AI voice agent so visitors know they are hearing an AI-generated voice.
 - The static demo does not send lead data anywhere. It only shows the conversation flow in the browser.
 
 ## Conversation Flow
@@ -30,7 +31,32 @@ Bob keeps the exchange short:
 7. Ask for timeline.
 8. Confirm that the request is ready for follow-up.
 
-For a production voice that feels truly natural, replace browser speech synthesis with a backend voice provider such as OpenAI Realtime, Gemini Live API, ElevenLabs Agents, Vapi, Retell AI, or Amazon Polly Generative voices.
+This version does not use browser `speechSynthesis` for Bob's voice. It calls a configurable backend endpoint that should generate OpenAI TTS audio with `gpt-4o-mini-tts`.
+
+Supported Bob voice choices in the widget:
+
+- `cedar`
+- `marin`
+- `onyx`
+- `echo`
+
+Set the endpoint in one of these ways:
+
+```html
+<script>
+  window.BOB_TTS_ENDPOINT = "https://YOUR_API_GATEWAY_URL/tts";
+</script>
+```
+
+or open the demo with:
+
+```text
+?tts=https://YOUR_API_GATEWAY_URL/tts&voice=cedar
+```
+
+The included `api/openai-tts-lambda.mjs` file is an AWS Lambda example for that endpoint. Configure `OPENAI_API_KEY` as a Lambda environment variable. Do not put the OpenAI API key in GitHub Pages or browser JavaScript.
+
+For a fully speech-to-speech production agent, use OpenAI Realtime instead of chained TTS. With Realtime, set `voice` to `cedar` or `marin` before the first audio response and keep the same voice for the session.
 
 ## Run Locally
 
