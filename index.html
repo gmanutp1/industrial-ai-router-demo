@@ -50,7 +50,7 @@
       <div id="bobPanel" class="bob-panel" hidden>
         <header class="bob-header">
           <div>
-            <p class="eyebrow">Voice Agent</p>
+            <p class="eyebrow">AI Voice Agent</p>
             <h2>Bob</h2>
           </div>
           <button id="closeBob" class="icon-only" type="button" aria-label="Close Bob">x</button>
@@ -73,6 +73,16 @@
           <button id="micButton" class="primary-button" type="button">Start talking</button>
           <button id="replayButton" class="secondary-button" type="button">Replay</button>
         </div>
+
+        <label class="voice-config" for="voiceSelect">
+          Voice
+          <select id="voiceSelect">
+            <option value="cedar">Cedar</option>
+            <option value="marin">Marin</option>
+            <option value="onyx">Onyx</option>
+            <option value="echo">Echo</option>
+          </select>
+        </label>
 
         <form id="textFallback" class="text-fallback">
           <label for="requestInput">Type instead</label>
