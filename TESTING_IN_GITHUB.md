@@ -1,89 +1,29 @@
-# Test The AI Voice Router In GitHub
+# Testing Bob In GitHub
 
-This is the fastest way to let Spooltech, ISD, and TRCW test the demo from a real GitHub Pages link.
-
-## Fastest Web-Only Setup
-
-Use this if you do not want to use Terminal yet.
-
-1. Go to https://github.com/new
-2. Create a new public repository, for example `industrial-ai-router-demo`.
-3. On the new repository page, choose `uploading an existing file`.
-4. Upload these files from this folder:
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `README.md`
-   - `TESTING_IN_GITHUB.md`
-   - `ai-voice-agent-product-blueprint.md`
-   - `aws-voice-agent-implementation-plan.md`
-   - `spooltech-isd-trcw-routing-knowledge.md`
-   - `.nojekyll` if GitHub lets you select hidden files
-5. Commit the upload to `main`.
-6. Open `Settings -> Pages`.
-7. Under `Build and deployment`, choose `Deploy from a branch`.
-8. Select:
-   - Branch: `gh-pages`
-   - Folder: `/root`
-9. Click `Save`.
-10. Wait 1-3 minutes, then open the GitHub Pages URL shown on that page.
-
-The page URL usually looks like:
+Open the GitHub Pages demo:
 
 ```text
-https://YOUR-GITHUB-USERNAME.github.io/industrial-ai-router-demo/
+https://gmanutp1.github.io/industrial-ai-router-demo/
 ```
 
-## GitHub Actions Setup
+## Main Test
 
-Use this if you can push the folder with `git`.
+1. Click the floating `Talk to Bob` button in the lower-left corner.
+2. Bob should open and say: `Hi I am Bob, how can I be of assistance today?`
+3. Click `Start talking`, then speak a customer request.
+4. If microphone permissions are blocked, type the request and click `Send`.
 
-1. Push the whole folder to a GitHub repo.
-2. Open `Settings -> Pages`.
-3. Under `Build and deployment`, choose `GitHub Actions`.
-4. The included `.github/workflows/pages.yml` workflow will publish the static site.
-
-## Test Cases
-
-Use the `Website being tested` selector first, then paste or speak these into the demo. The AI reply should also play out loud when `Voice reply: On` is enabled.
-
-- `I need Inconel 625 weld overlay on a frac valve.`
-  - Expected: TRCW
-- `Can you cut and form heavy sheet metal for an air handling unit?`
-  - Expected: ISD
-- `Can you fabricate a thermal coating booth?`
-  - Expected: ISD
-- `We need a pressure vessel and process piping fabricated to API standards.`
-  - Expected: Spooltech
-- `I need a skid fabricated with no pressure piping.`
-  - Expected: ISD
-- `Can you install an air handling unit?`
-  - Expected: Manual Review
-- `Can ISD build commercial cooking equipment?`
-  - Expected: Manual Review
-
-## Website-Specific Redirect Tests
+## Routing Tests
 
 - Select `ISD website`, then ask for `a pressure vessel and process piping`.
-  - Expected spoken reply: ISD may not be the best fit; Spooltech is the better sister company.
+  - Expected: Bob redirects toward Spooltech.
 - Select `Spooltech website`, then ask for `sheet metal for an air handling unit`.
-  - Expected spoken reply: Spooltech may not be the best fit; ISD is the better sister company.
+  - Expected: Bob redirects toward ISD.
 - Select `TRCW website`, then ask for `Inconel 625 weld overlay`.
-  - Expected spoken reply: TRCW should be able to help.
+  - Expected: Bob says TRCW should be able to help.
+- Select `ISD website`, then ask for `commercial cooking equipment`.
+  - Expected: Bob says the request needs manual review.
 
-## Voice Testing Notes
+## Voice Notes
 
-- The microphone button works best in Chrome or Edge.
-- GitHub Pages uses HTTPS, which helps browser microphone permissions work.
-- The spoken AI answer uses the browser's built-in speech synthesis.
-- Use `Replay reply` if a reviewer misses the spoken answer.
-- If the browser blocks voice input, use the text box. The routing logic is the same.
-
-## What To Ask The Company To Review
-
-- Did the demo route each request to the right company?
-- Which phrases produced the wrong route?
-- Are the transfer phone numbers correct?
-- Should low-confidence calls go to a specific person?
-- Should after-hours calls transfer, take voicemail, or create a lead?
-- Who should receive lead emails for each company?
+The GitHub demo uses browser speech synthesis, so voice quality depends on the reviewer's browser and operating system. The production AWS version should use a dedicated natural voice service so Bob sounds more human and consistent.
