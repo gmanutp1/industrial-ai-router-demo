@@ -3,192 +3,89 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Spooltech Group AI Voice Agent Demo</title>
+    <title>Talk to Bob - Industrial Voice Agent Demo</title>
     <meta
       name="description"
-      content="A GitHub Pages demo for routing calls between Spooltech, ISD, and TRCW."
+      content="A lightweight website widget demo for Bob, an AI voice agent that routes visitors between Spooltech, ISD, and TRCW."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div class="brand-lockup" aria-label="Industrial AI Voice Router">
+    <main class="site-preview" aria-label="Website preview">
+      <header class="site-header">
+        <div class="brand-lockup">
           <span class="brand-mark" aria-hidden="true">ST</span>
           <div>
-            <p class="eyebrow">Spooltech Group Pilot Demo</p>
-            <h1>AI Voice Agent</h1>
+            <p>Spooltech Group</p>
+            <strong id="previewCompany">Spooltech</strong>
           </div>
         </div>
-        <nav class="top-actions" aria-label="Demo actions">
-          <a href="spooltech-isd-trcw-routing-knowledge.md">Knowledge Base</a>
-          <a href="ai-voice-agent-product-blueprint.md">Product Blueprint</a>
-          <a href="aws-voice-agent-implementation-plan.md">AWS Plan</a>
-        </nav>
+        <label class="preview-switcher">
+          <span>Previewing</span>
+          <select id="siteSelect">
+            <option value="spooltech">Spooltech website</option>
+            <option value="isd">ISD website</option>
+            <option value="trcw">TRCW website</option>
+            <option value="group">Group landing page</option>
+          </select>
+        </label>
       </header>
 
-      <main class="workspace">
-        <section class="agent-panel" aria-labelledby="agent-title">
-          <div class="agent-status">
-            <div>
-              <p class="eyebrow">Website Agent Experience</p>
-              <h2 id="agent-title">Ask the AI voice agent</h2>
-            </div>
-            <span id="voiceStatus" class="status-pill">Ready</span>
-          </div>
-
-          <div class="site-context">
-            <label for="siteSelect">
-              Website being tested
-              <select id="siteSelect">
-                <option value="group">Group landing page</option>
-                <option value="spooltech">Spooltech website</option>
-                <option value="isd">ISD website</option>
-                <option value="trcw">TRCW website</option>
-              </select>
-            </label>
-            <div class="voice-controls">
-              <button id="speakToggle" type="button" class="secondary-button">Voice reply: On</button>
-              <button id="replayButton" type="button" class="secondary-button">Replay reply</button>
-            </div>
-          </div>
-
-          <div class="dialogue" aria-live="polite">
-            <div class="message agent">
-              <span class="message-avatar">AI</span>
-              <p>
-                Thanks for reaching out. Tell me what you need built, repaired,
-                cut, formed, coated, machined, or fabricated, and I'll help get
-                you to the right team.
-              </p>
-            </div>
-            <div id="callerMessage" class="message caller is-empty">
-              <span class="message-avatar">You</span>
-              <p>Your spoken or typed request will appear here.</p>
-            </div>
-            <div id="agentReply" class="message agent reply-message">
-              <span class="message-avatar">AI</span>
-              <p>
-                I'll answer out loud and tell the visitor whether this company
-                can help or whether a sister company is the better fit.
-              </p>
-            </div>
-          </div>
-
-          <form id="requestForm" class="intake-form">
-            <label for="requestInput">Visitor request</label>
-            <textarea
-              id="requestInput"
-              rows="5"
-              placeholder="Example: Can ISD help with a sheet metal air handling unit?"
-            ></textarea>
-            <div class="form-actions">
-              <button id="micButton" type="button" class="icon-button" aria-label="Start voice input">
-                <svg aria-hidden="true" viewBox="0 0 24 24" class="button-icon">
-                  <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 1 0 6 0V6a3 3 0 0 0-3-3Z" />
-                  <path d="M5 11a7 7 0 0 0 14 0" />
-                  <path d="M12 18v3" />
-                  <path d="M8 21h8" />
-                </svg>
-                <span>Talk</span>
-              </button>
-              <button type="submit" class="primary-button">Ask agent</button>
-              <button id="resetButton" type="button" class="secondary-button">Reset</button>
-            </div>
-          </form>
-
-          <div class="sample-strip" aria-label="Sample caller requests">
-            <button type="button" data-sample="I need Inconel 625 weld overlay on a frac valve.">
-              Cladding
-            </button>
-            <button type="button" data-sample="Can you cut and form heavy sheet metal for an air handling unit?">
-              ISD sheet metal
-            </button>
-            <button type="button" data-sample="We need a pressure vessel and process piping fabricated to API standards.">
-              Spooltech
-            </button>
-            <button type="button" data-sample="Can you fabricate a thermal coating booth?">
-              Coating booth
-            </button>
-            <button type="button" data-sample="Can Spooltech help with DNV skids and pressure piping?">
-              DNV skid
-            </button>
-          </div>
-        </section>
-
-        <section class="result-panel" aria-labelledby="result-title">
-          <div class="result-header">
-            <div>
-              <p class="eyebrow">Agent Decision</p>
-              <h2 id="result-title">Awaiting visitor request</h2>
-            </div>
-            <span id="confidenceBadge" class="confidence-badge neutral">No score</span>
-          </div>
-
-          <div id="routeResult" class="route-card empty-state">
-            <p>
-              The agent will answer the visitor, explain whether the current
-              company can help, and recommend a sister company when needed.
-            </p>
-          </div>
-        </section>
-
-        <aside class="side-panel" aria-label="Demo analytics and lead capture">
-          <section class="metrics-block">
-            <div class="panel-heading">
-              <p class="eyebrow">Local Analytics</p>
-              <button id="clearAnalytics" type="button">Clear</button>
-            </div>
-            <div class="metric-grid">
-              <div>
-                <span id="metricCalls">0</span>
-                <p>Demo calls</p>
-              </div>
-              <div>
-                <span id="metricLow">0</span>
-                <p>Low confidence</p>
-              </div>
-              <div>
-                <span id="metricLeads">0</span>
-                <p>Saved leads</p>
-              </div>
-            </div>
-            <div id="routeBreakdown" class="route-breakdown"></div>
-          </section>
-
-          <section class="lead-block">
-            <p class="eyebrow">Quote Intake</p>
-            <form id="leadForm" class="lead-form">
-              <label>
-                Name
-                <input id="leadName" autocomplete="name" placeholder="Caller name" />
-              </label>
-              <label>
-                Company
-                <input id="leadCompany" autocomplete="organization" placeholder="Company" />
-              </label>
-              <label>
-                Phone
-                <input id="leadPhone" autocomplete="tel" placeholder="Phone number" />
-              </label>
-              <label>
-                Email
-                <input id="leadEmail" autocomplete="email" placeholder="Email address" />
-              </label>
-              <button type="submit" class="primary-button full-width">Save demo lead</button>
-            </form>
-          </section>
-        </aside>
-      </main>
-
-      <section class="rules-panel" aria-labelledby="rules-title">
-        <div>
-          <p class="eyebrow">Routing Matrix</p>
-          <h2 id="rules-title">How the demo decides</h2>
-        </div>
-        <div id="rulesGrid" class="rules-grid"></div>
+      <section class="hero">
+        <p class="eyebrow">Concept to delivery</p>
+        <h1 id="previewHeadline">Industrial fabrication support without the phone tree.</h1>
+        <p id="previewCopy">
+          This page is only a host-site preview. The actual product experience is Bob,
+          the floating voice agent in the lower-left corner.
+        </p>
       </section>
-    </div>
+    </main>
+
+    <section class="bob-widget" aria-live="polite">
+      <button id="bobLauncher" class="bob-launcher" type="button" aria-expanded="false">
+        <span class="bob-avatar" aria-hidden="true">B</span>
+        <span>Talk to Bob</span>
+      </button>
+
+      <div id="bobPanel" class="bob-panel" hidden>
+        <header class="bob-header">
+          <div>
+            <p class="eyebrow">Voice Agent</p>
+            <h2>Bob</h2>
+          </div>
+          <button id="closeBob" class="icon-only" type="button" aria-label="Close Bob">x</button>
+        </header>
+
+        <div class="conversation">
+          <p id="bobStatus" class="status-line">Ready</p>
+          <div class="bubble bob-bubble">
+            <span>Bob</span>
+            <p id="bobReply">Press Talk to Bob and I will greet the visitor.</p>
+          </div>
+          <div class="bubble visitor-bubble">
+            <span>You</span>
+            <p id="visitorText">Your spoken request will appear here.</p>
+          </div>
+        </div>
+
+        <div class="bob-actions">
+          <button id="micButton" class="primary-button" type="button">Start talking</button>
+          <button id="replayButton" class="secondary-button" type="button">Replay</button>
+        </div>
+
+        <form id="textFallback" class="text-fallback">
+          <label for="requestInput">Type instead</label>
+          <div>
+            <input
+              id="requestInput"
+              autocomplete="off"
+              placeholder="Example: air handling unit fabrication"
+            />
+            <button type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+    </section>
 
     <script src="app.js"></script>
   </body>
