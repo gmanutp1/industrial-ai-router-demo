@@ -63,14 +63,38 @@ const siteCopy = {
 };
 
 const greetingText = "Hi I am Bob, how can I be of assistance today?";
-const spokenGreetingText = "Hi, I am Bob. How can I be of assistance today?";
+const spokenGreetingText = "Hi, I'm Bob. How can I help today?";
 const contactFields = ["name", "phone", "email", "company", "timeline"];
+const allowedVoices = ["cedar", "marin", "onyx", "echo"];
+const defaultVoice = "cedar";
+const voiceStyleInstructions = [
+  "You are Bob, a warm adult male industrial receptionist.",
+  "Sound relaxed, confident, friendly, and lightly expressive.",
+  "Use a natural lower-register delivery with medium-slow pacing.",
+  "Speak in short phrases with small pauses between ideas.",
+  "Make it sound like one helpful person talking, not a script being read.",
+  "Use contractions like I'm, you're, that's, and we'll.",
+  "Avoid robotic phrasing, corporate jargon, long sentences, numbered-list speech, and support-article language.",
+  "Never say: As an AI language model, I am here to assist you, or Processing your request.",
+].join(" ");
+
+const voiceConfig = {
+  endpoint:
+    new URLSearchParams(window.location.search).get("tts") ||
+    window.BOB_TTS_ENDPOINT ||
+    localStorage.getItem("bobTtsEndpoint") ||
+    "",
+  voice:
+    new URLSearchParams(window.location.search).get("voice") ||
+    localStorage.getItem("bobVoice") ||
+    defaultVoice,
+};
 
 const state = {
   open: false,
   listening: false,
   recognition: null,
-  voices: [],
+  audio: null,
   lastReply: greetingText,
   intake: createIntake(),
 };
@@ -89,6 +113,7 @@ const els = {
   visitorText: document.querySelector("#visitorText"),
   micButton: document.querySelector("#micButton"),
   replayButton: document.querySelector("#replayButton"),
+  voiceSelect: document.querySelector("#voiceSelect"),
   fallbackForm: document.querySelector("#textFallback"),
   input: document.querySelector("#requestInput"),
 };
@@ -134,69 +159,96 @@ function setPreview(siteId) {
   els.previewCopy.textContent = copy.copy;
 }
 
-function chooseVoice() {
-  const voices = state.voices.length ? state.voices : window.speechSynthesis?.getVoices?.() || [];
-  const preferred = [
-    "Microsoft Aria",
-    "Microsoft Jenny",
-    "Microsoft Ava",
-    "Microsoft Andrew",
-    "Microsoft Brian",
-    "Google US English",
-    "Google UK English Male",
-    "Google UK English Female",
-    "Samantha",
-    "Karen",
-    "Alex",
-    "Daniel",
-  ];
-
-  return (
-    preferred.map((name) => voices.find((voice) => voice.name.includes(name))).find(Boolean) ||
-    voices.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith("en-us")) ||
-    voices.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith("en")) ||
-    null
-  );
+function configuredVoice() {
+  return allowedVoices.includes(voiceConfig.voice) ? voiceConfig.voice : defaultVoice;
 }
 
-function speechText(text) {
-  if (text === greetingText) return spokenGreetingText;
-  return text
+function rewriteForSpeech(text) {
+  const base = text === greetingText ? spokenGreetingText : text;
+  return base
+    .replace(/[*_`#>-]/g, "")
+    .replace(/\bI am\b/g, "I'm")
+    .replace(/\bI will\b/g, "I'll")
+    .replace(/\bI do not\b/g, "I don't")
+    .replace(/\bYou are\b/g, "You're")
+    .replace(/\bThat is\b/g, "That's")
+    .replace(/\bWe will\b/g, "We'll")
+    .replace(/\bGot it\. That sounds more like\b/g, "Got it. That sounds like")
+    .replace(/\bPerfect\. I have what I need for now\./g, "Perfect. I've got what I need for now.")
     .replace(/\bISD\b/g, "I S D")
     .replace(/\bTRCW\b/g, "T R C W")
     .replace(/\bDNV\b/g, "D N V")
-    .replace(/\bNDE\b/g, "N D E");
+    .replace(/\bNDE\b/g, "N D E")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-function speak(text, onDone) {
+function setVoiceStatus(message) {
+  els.status.textContent = message;
+}
+
+async function speak(text, onDone) {
   state.lastReply = text;
   els.reply.textContent = text;
 
-  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
-    els.status.textContent = "Text reply ready";
+  if (!voiceConfig.endpoint) {
+    setVoiceStatus("OpenAI voice endpoint not configured");
     if (onDone) onDone();
     return;
   }
 
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(speechText(text));
-  const voice = chooseVoice();
-  if (voice) utterance.voice = voice;
-  utterance.rate = 0.97;
-  utterance.pitch = 1;
-  utterance.volume = 1;
-  utterance.onstart = () => {
-    els.status.textContent = "Bob is speaking";
-  };
-  utterance.onend = () => {
-    els.status.textContent = "Ready when you are";
+  if (state.audio) {
+    state.audio.pause();
+    state.audio = null;
+  }
+
+  try {
+    setVoiceStatus("Getting Bob's voice");
+    const response = await fetch(voiceConfig.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: rewriteForSpeech(text),
+        voice: configuredVoice(),
+        instructions: voiceStyleInstructions,
+        response_format: "mp3",
+      }),
+    });
+
+    if (!response.ok) throw new Error(`TTS request failed: ${response.status}`);
+    const contentType = response.headers.get("content-type") || "";
+    let audioBlob;
+    if (contentType.includes("application/json")) {
+      const data = await response.json();
+      audioBlob = base64ToBlob(data.audio, data.mimeType || "audio/mpeg");
+    } else {
+      audioBlob = await response.blob();
+    }
+
+    const audio = new Audio(URL.createObjectURL(audioBlob));
+    state.audio = audio;
+    audio.onplay = () => setVoiceStatus("Bob is speaking");
+    audio.onended = () => {
+      setVoiceStatus("Ready when you are");
+      URL.revokeObjectURL(audio.src);
+      if (onDone) onDone();
+    };
+    audio.onerror = () => {
+      setVoiceStatus("Voice playback failed");
+      if (onDone) onDone();
+    };
+    await audio.play();
+  } catch (error) {
+    console.warn(error);
+    setVoiceStatus("OpenAI voice unavailable");
     if (onDone) onDone();
-  };
-  utterance.onerror = () => {
-    els.status.textContent = "Text reply ready";
-    if (onDone) onDone();
-  };
-  window.speechSynthesis.speak(utterance);
+  }
+}
+
+function base64ToBlob(base64, mimeType) {
+  const binary = atob(base64);
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return new Blob([bytes], { type: mimeType });
 }
 
 function updateSummary() {
@@ -223,7 +275,7 @@ function closeBob() {
   els.panel.hidden = true;
   els.launcher.setAttribute("aria-expanded", "false");
   if (state.recognition && state.listening) state.recognition.stop();
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  if (state.audio) state.audio.pause();
 }
 
 function scoreBusiness(text, business) {
@@ -270,8 +322,8 @@ function nextMissingField() {
 }
 
 function questionFor(field) {
-  if (field === "name") return "What name should I put on the request?";
-  if (field === "phone") return `${firstName() ? `Thanks, ${firstName()}. ` : "Thanks. "}What's the best phone number?`;
+  if (field === "name") return "What name should I put on this?";
+  if (field === "phone") return `${firstName() ? `Thanks, ${firstName()}. ` : "Thanks. "}What's the best phone number for you?`;
   if (field === "email") return "Got it. What's the best email address?";
   if (field === "company") return "Thanks. What company are you with?";
   if (field === "timeline") return "And what timeline are you working with?";
@@ -281,7 +333,7 @@ function questionFor(field) {
 function routeIntro(route) {
   const siteId = currentSiteId();
   if (route.id === "review") {
-    return "Got it. I do not want to route that wrong, so I will have the team review it.";
+    return "Got it. I don't want to point you to the wrong team, so I'll have someone review it.";
   }
   const business = businesses[route.id];
   if (siteId === "group") return `Got it. That sounds like ${business.name}.`;
@@ -292,11 +344,11 @@ function routeIntro(route) {
 function finalReply() {
   const route = state.intake.route;
   const routeName = route && route.id !== "review" ? businesses[route.id].name : "the team";
-  return `Perfect. I have what I need for now. I will route this to ${routeName} and include your contact details for follow-up.`;
+  return `Perfect. I've got what I need for now. I'll route this to ${routeName}, and someone can follow up with you.`;
 }
 
 function clarifyReply() {
-  return "I can help. Is this more about pressure piping or vessels, sheet metal or air handling, or coating, overlay, or machining?";
+  return "I can help. Is this closer to pressure work, sheet metal and air handling, or overlay and machining?";
 }
 
 function applyExtractedFields(text, expectedField) {
@@ -335,7 +387,7 @@ function missingFieldReply(field) {
 
 function handleRequestStep(text) {
   if (isGreetingOnly(text)) {
-    return "Hey, glad to help. What are you looking to get built or serviced?";
+    return "Hey, glad to help. What are you trying to get built or serviced?";
   }
 
   applyExtractedFields(text);
@@ -382,7 +434,7 @@ function nextBobReply(text) {
 
   if (state.intake.step === "request") return handleRequestStep(trimmed);
   if (state.intake.step === "done") {
-    return "Got it. I will add that note to the request.";
+    return "Got it. I will add that note.";
   }
   return handleFieldStep(trimmed);
 }
@@ -434,16 +486,10 @@ function setupSpeechRecognition() {
   };
 }
 
-if ("speechSynthesis" in window) {
-  state.voices = window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged = () => {
-    state.voices = window.speechSynthesis.getVoices();
-  };
-}
-
 setPreview(currentSiteId());
 setupSpeechRecognition();
 updateSummary();
+els.voiceSelect.value = configuredVoice();
 
 els.siteSelect.addEventListener("change", (event) => setPreview(event.target.value));
 
@@ -464,6 +510,12 @@ els.micButton.addEventListener("click", () => {
 });
 
 els.replayButton.addEventListener("click", () => speak(state.lastReply));
+
+els.voiceSelect.addEventListener("change", (event) => {
+  voiceConfig.voice = allowedVoices.includes(event.target.value) ? event.target.value : defaultVoice;
+  localStorage.setItem("bobVoice", voiceConfig.voice);
+  setVoiceStatus("Voice updated");
+});
 
 els.fallbackForm.addEventListener("submit", (event) => {
   event.preventDefault();
