@@ -8,13 +8,29 @@ When clicked, Bob opens and says:
 Hi I am Bob, how can I be of assistance today?
 ```
 
-Bob can then listen through the browser microphone or accept typed input, answer conversationally, and route the visitor toward Spooltech, ISD, TRCW, or manual review.
+Bob can then listen through the browser microphone or accept typed input, answer conversationally, route the visitor toward Spooltech, ISD, TRCW, or manual review, and collect contact details one question at a time.
 
 ## Demo Notes
 
 - The page is intentionally minimal so the customer sees the website, not a routing dashboard.
 - The voice uses the browser's best available speech-synthesis voice for GitHub Pages testing.
 - A production version should use a high-quality voice service through the AWS backend so Bob sounds more natural and consistent across devices.
+- The static demo does not send lead data anywhere. It only shows the conversation flow in the browser.
+
+## Conversation Flow
+
+Bob keeps the exchange short:
+
+1. Understand what the visitor needs.
+2. Route to Spooltech, ISD, TRCW, or manual review.
+3. Ask for name.
+4. Ask for phone.
+5. Ask for email.
+6. Ask for company.
+7. Ask for timeline.
+8. Confirm that the request is ready for follow-up.
+
+For a production voice that feels truly natural, replace browser speech synthesis with a backend voice provider such as OpenAI Realtime, Gemini Live API, ElevenLabs Agents, Vapi, Retell AI, or Amazon Polly Generative voices.
 
 ## Run Locally
 
